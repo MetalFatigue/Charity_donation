@@ -1,14 +1,16 @@
+from django.db.models import Sum
 from django.shortcuts import render
 from django.views import View
-
 from share.models import Donation, Institution
 
 
 class LandingPage(View):
     def get(self, request):
-        bags = Donation.objects.all().count() # trzeba mnożyć razy quantity zeby wyszły worki
-        institution = Institution.objects.all().count() # tu maja buć te co dostały a nie wszystkie
-        return render(request, "index.html", {"bags": bags, "institution": institution})
+        bags = Donation.objects.all().aggregate(Sum('quantity'))
+        institutions = Institution.objects.all()
+        donated_institutions = institutions.filter(donation__quantity__gt=0).count()
+        return render(request, "index.html", {"bags": bags, "institutions": institutions,
+                                              "donated_institution": donated_institutions})
 
 
 class AddDonation(View):

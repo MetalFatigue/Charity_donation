@@ -1,21 +1,35 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from django.forms import Textarea, TextInput
 
 User = get_user_model()
 
 class RegisterForm(forms.ModelForm):
     """
     The default
-
     """
+    password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
+    password_2 = forms.CharField(label='', widget=forms.PasswordInput(attrs={'placeholder': 'Powtórz hasło'}))
 
-    password = forms.CharField(widget=forms.PasswordInput)
-    password_2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput)
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'].label = ""
+        self.fields['last_name'].label = ""
+        self.fields['email'].label = ""
+
+
 
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['first_name', 'last_name', 'email']
+        widgets = {
+            'first_name': TextInput(attrs={'placeholder': 'Imię'}),
+            'last_name': TextInput(attrs={'placeholder': 'Nazwisko'}),
+            'email': TextInput(attrs={'placeholder': 'Email'}),
+        }
+
+
 
     def clean_email(self):
         '''

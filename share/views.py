@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import View, generic
 from share.models import Donation, Institution
-# from share.forms import RegisterForm
+from accounts.forms import RegisterForm
 
 class LandingPage(View):
     def get(self, request):
@@ -35,14 +35,10 @@ class Login(View):
         return render(request, "login.html")
 
 
-# class Register(SuccessMessageMixin, generic.CreateView):
-#     """Widok rejestracji użytkownika"""
-#     template_name = 'register.html'
-#     form_class = RegisterForm
-#     success_message = "Dodano użytkownika"
-#     success_url = reverse_lazy('login')
-
-class Register(View):
-    def get(self, request):
-        return render(request, "register.html")
+class Register(SuccessMessageMixin, generic.CreateView):
+    """Widok rejestracji użytkownika"""
+    template_name = 'register.html'
+    form_class = RegisterForm
+    success_message = "Dodano użytkownika"
+    success_url = reverse_lazy('login')
 

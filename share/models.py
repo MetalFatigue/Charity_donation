@@ -1,6 +1,5 @@
-from django.contrib.auth.models import User
 from django.db import models
-
+from accounts.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=30)
@@ -31,4 +30,3 @@ class Donation(models.Model):
     pick_up_time = models.TimeField()
     pick_up_comment = models.CharField(max_length=220, blank=True)
     user = models.ForeignKey(User, null=True, default=0, on_delete=models.CASCADE)
-

@@ -91,11 +91,13 @@
                 {% for f in foundations %}
                     <li>
                         <div class="col">
-                            <div class="title">Fundacja {{ f.name }}</div>
+                            <div class="title">{{ f.name }}</div>
                             <div class="subtitle">{{ f.description}}</div>
                         </div>
-                             <div class="col"><div class="text">{{ f.categories }}</div>
-                        </div>
+                        {% for category in f.categories.all %}
+                        <div class="col"><div class="text">{{ category.name }}</div></div>
+                        {% endfor %}
+
                     </li>
                 {% endfor %}
             </ul>
@@ -121,9 +123,9 @@
                             <div class="title">{{ n.name }}</div>
                             <div class="subtitle">{{ n.description}}</div>
                         </div>
-
-                        <div class="col"><div class="text">{{ n.categories }}</div></div>
-
+                            {% for category in n.categories.all %}
+                        <div class="col"><div class="text">{{ category.name }}</div></div>
+                        {% endfor %}
                     </li>
                 {% endfor %}
             </ul>
@@ -148,9 +150,9 @@
                             <div class="title">{{ c.name }}</div>
                             <div class="subtitle">{{ c.description}}</div>
                         </div>
-
-                        <div class="col"><div class="text">{{ c.categories }}</div></div>
-
+                        {% for category in c.categories.all %}
+                        <div class="col"><div class="text">{{ category.name }}</div></div>
+                        {% endfor %}
                     </li>
                 {% endfor %}
             </ul>

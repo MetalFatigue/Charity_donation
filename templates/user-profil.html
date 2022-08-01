@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="pl">
+<body>
+{% block content %}
+    <section class="login-page">
+        <h2>Profil Użytkownika</h2>
+        <div class="user-profile">
+            <p>Imię: {{ user.first_name }}</p>
+            <p>Nazwisko: {{ user.last_name }}</p>
+            <p>Email: {{ user.email }}</p>
+        </div>
+    </section>
+    <section class="donations">
+        <h2>Lista przekazanych darów</h2>
+        <table class="user-donations">
+            <thead>
+            <tr>
+                <th>Ilość przekazanych worków</th>
+                <th>Cel</th>
+                <th>Kategorie</th>
+                <th>data odbioru /<br> data przekazania</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                {% for donation in donations %}
+                    <td>{{ donation.quantity}}</td>
+                    <td>{{ donation.institution }}</td>
+                    <td>{% for category in donation.categories.all %}{{ category }}<br>{% endfor %}</td>
+                    <td>{{ donation.pick_up_date }}</td>
+                {% endfor %}
+            </tr>
+            </tbody>
+        </table>
+    </section>
+{% endblock %}
+<script src="{% static "js/app.js" %}"></script>
+</body>
+</html>

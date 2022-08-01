@@ -6,6 +6,7 @@ from accounts.forms import RegisterForm, LoginForm
 from django.contrib.auth import authenticate, login
 
 
+
 class Register(SuccessMessageMixin, generic.CreateView):
     """Widok rejestracji użytkownika"""
     template_name = 'register.html'
@@ -37,4 +38,3 @@ class Login(View):
             form = LoginForm
             message = f'Użytkownik o podanym adresie email: {email} nie istnieje'
             return render(request, 'login.html', {"form": form, "message": message})
-

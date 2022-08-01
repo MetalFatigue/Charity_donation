@@ -9,6 +9,7 @@ User = get_user_model()
 # Remove Group Model from admin. We're not using it.
 admin.site.unregister(Group)
 
+
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
     form = UserAdminChangeForm
@@ -22,14 +23,14 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         ('Personal info', {'fields': ('first_name', 'last_name')}),
-        ('Permissions', {'fields': ('admin',)}),
+        ('Permissions', {'fields': ('is_active', 'staff', 'admin',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2')}
+            'fields': ('first_name', 'last_name','email', 'password', 'password_2')}
         ),
     )
     search_fields = ['email', 'last_name']
@@ -38,4 +39,5 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+
 

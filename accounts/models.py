@@ -2,42 +2,60 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
 
+"""https://www.youtube.com/watch?v=HshbjK1vDtY&t=2512s"""
+
+
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None):
+    def create_user(self, first_name, last_name, email, password=None):
         """
         Creates and saves a User with the given email and password.
         """
+        if not first_name:
+            raise ValueError('Nie podałeś imienia')
+        if not last_name:
+            raise ValueError('Nie podałeś nazwiska')
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError('Nie podałeś adresu email')
         if not password:
-            raise ValueError('User must have a password')
-        user = self.model(email=self.normalize_email(email))
+            raise ValueError('Nie podałeś hasła')
+
+        user = self.model(email=self.normalize_email(email), first_name=first_name, last_name=last_name)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_staffuser(self, email, password):
+    def create_staffuser(self, first_name, last_name, email, password=None):
         """
         Creates and saves a staff user with the given email and password.
         """
+        if not first_name:
+            raise ValueError('Nie podałeś imienia')
+        if not last_name:
+            raise ValueError('Nie podałeś nazwiska')
         if not email:
             raise ValueError('User must have an email address')
         if not password:
             raise ValueError('User must have a password')
-        user = self.create_user(email, password=password)
+
+        user = self.create_user(email, first_name, last_name, password=password)
         user.staff = True
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, password):
+    def create_superuser(self, first_name, last_name, email, password=None):
         """
         Creates and saves a superuser with the given email and password.
         """
+        if not first_name:
+            raise ValueError('Nie podałeś imienia')
+        if not last_name:
+            raise ValueError('Nie podałeś nazwiska')
         if not email:
             raise ValueError('User must have an email address')
         if not password:
             raise ValueError('User must have a password')
-        user = self.create_user(email, password=password)
+
+        user = self.create_user(email, first_name, last_name, password=password)
         user.staff = True
         user.admin = True
         user.save(using=self._db)
@@ -45,8 +63,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30)
+    first_name = models.CharField(max_length=30, blank=True, null=True)
+    last_name = models.CharField(max_length=30, blank=True, null=True)
     email = models.EmailField(verbose_name='email address', max_length=255, unique=True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False) # a admin user; non super-user
@@ -55,7 +73,7 @@ class User(AbstractBaseUser):
     # notice the absence of a "Password field", that is built in.
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []  # Email &amp; Password are required by default.
+    REQUIRED_FIELDS = ["first_name", "last_name"]  # Email &amp; Password are required by default.
 
     objects = UserManager()
 

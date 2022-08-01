@@ -1,11 +1,9 @@
-from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum
-from django.forms import forms
-from django.shortcuts import render, redirect
-from django.urls import reverse_lazy
-from django.views import View, generic
+from django.shortcuts import render
+from django.views import View
 from share.models import Donation, Institution
-from accounts.forms import RegisterForm
+
 
 class LandingPage(View):
     def get(self, request):
@@ -15,30 +13,22 @@ class LandingPage(View):
         non_government_organization = institutions.filter(type=1)
         community_collection = institutions.filter(type=2)
         donated_institutions = institutions.filter(donation__quantity__gt=0).count()
+        if request.user.is_authenticated:
+            name = request.user.first_name
+        else:
+            name = ''
+
         context = {
             "bags": bags,
             "foundations": foundations,
             "non_government_organization": non_government_organization,
             "community_collection": community_collection,
-            "donated_institution": donated_institutions
+            "donated_institution": donated_institutions,
+            "name": name
         }
         return render(request, "index.html", context)
 
 
-class AddDonation(View):
+class AddDonation(LoginRequiredMixin, View):
     def get(self, request):
         return render(request, "form.html")
-
-
-class Login(View):
-    def get(self, request):
-        return render(request, "login.html")
-
-
-class Register(SuccessMessageMixin, generic.CreateView):
-    """Widok rejestracji użytkownika"""
-    template_name = 'register.html'
-    form_class = RegisterForm
-    success_message = "Dodano użytkownika"
-    success_url = reverse_lazy('login')
-

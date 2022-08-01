@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-from django.forms import Textarea, TextInput
+from django.forms import TextInput
+
 
 User = get_user_model()
+
 
 class RegisterForm(forms.ModelForm):
     """
@@ -18,8 +20,6 @@ class RegisterForm(forms.ModelForm):
         self.fields['last_name'].label = ""
         self.fields['email'].label = ""
 
-
-
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
@@ -28,8 +28,6 @@ class RegisterForm(forms.ModelForm):
             'last_name': TextInput(attrs={'placeholder': 'Nazwisko'}),
             'email': TextInput(attrs={'placeholder': 'Email'}),
         }
-
-
 
     def clean_email(self):
         '''
@@ -63,7 +61,7 @@ class UserAdminCreationForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email']
+        fields = ['first_name', 'last_name', 'email']
 
     def clean(self):
         '''
@@ -94,10 +92,28 @@ class UserAdminChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'is_active', 'admin']
+        fields = ['first_name', 'last_name', 'email', 'password', 'is_active', 'admin']
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+
+
+class LoginForm(forms.ModelForm):
+    # email = forms.CharField(label='', widget=forms.TextInput(attrs={'placeholder': 'Email'}))
+    # password = forms.CharField(label='', widget=forms.PasswordInput(attrs={'placeholder': 'Hasło'}))
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields['email'].label = ""
+        self.fields['password'].label = ""
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
+        widgets = {
+            'password': forms.PasswordInput(attrs={'placeholder': 'Hasło'}),
+            'email': TextInput(attrs={'placeholder': 'Email'}),
+        }
+

@@ -1,14 +1,17 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers import serialize
 from django.db.models import Sum
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from accounts.models import User
-from share.models import Donation, Institution
+from share.forms import DonationForm
+from share.models import Donation, Institution, Category
 
 
 class LandingPage(View):
     def get(self, request):
-        bags = Donation.objects.all().aggregate(Sum('quantity'))
+        quantity = Donation.objects.all().aggregate(Sum('quantity'))
         institutions = Institution.objects.all()
         foundations = institutions.filter(type=0)
         non_government_organization = institutions.filter(type=1)
@@ -20,7 +23,7 @@ class LandingPage(View):
             name = ''
 
         context = {
-            "bags": bags,
+            "quantity": quantity,
             "foundations": foundations,
             "non_government_organization": non_government_organization,
             "community_collection": community_collection,
@@ -32,7 +35,27 @@ class LandingPage(View):
 
 class AddDonation(LoginRequiredMixin, View):
     def get(self, request):
-        return render(request, "form.html")
+
+        categories = Category.objects.all()
+        return render(request, "form.html", {"categories": categories})
+
+    def post(self, request):
+        form = DonationForm(request.POST)
+        if form.is_valid():
+            donation = form.save(commit=False)
+            donation.user = request.user
+            donation.save()
+            donation.categories.set(form.cleaned_data.get('categories'))
+            donation.save()
+            return render(request, 'form-confirmation.html')
+        return render(request, 'form-fail.html')
+def get_institution_by_category(request):
+    categories_ids = request.GET.getlist('id')
+    institutions = Institution.objects.all()
+    for category_id in categories_ids:
+        institutions = institutions.filter(categories__id=category_id)
+    data = serialize('json', institutions)
+    return HttpResponse(data, content_type="application/json")
 
 
 class UserProfil(View):

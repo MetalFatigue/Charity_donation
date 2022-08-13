@@ -18,10 +18,10 @@
     <section id="stats" class="stats">
         <div class="container container--85">
             <div class="stats--item">
-                {% if bags.quantity__sum is none %}
+                {% if quantity.quantity__sum is none %}
                     <em>{{ 0 }}</em>
                 {% else %}
-                    <em>{{ bags.quantity__sum }}</em>
+                    <em>{{ quantity.quantity__sum }}</em>
                 {% endif %}
                 <h3>Oddanych worków</h3>
                 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius est beatae, quod accusamus illum tempora!</p>
@@ -101,13 +101,14 @@
                     </li>
                 {% endfor %}
             </ul>
-            <!-- Pagination
-            <ul class="help--slides-pagination">
-            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-            </ul>
-            -->
+
+{#            <!-- Pagination-->#}
+{#            <ul class="help--slides-pagination">#}
+{#            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>#}
+{#            </ul>#}
+
         </div>
 
         <!-- SLIDE 2 -->
@@ -129,15 +130,16 @@
                     </li>
                 {% endfor %}
             </ul>
-            <!-- Pagination
-            <ul class="help--slides-pagination">
-            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>
-            </ul>
-            -->
+
+{#            <!-- Pagination-->#}
+{#            <ul class="help--slides-pagination">#}
+{#            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="3">3</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="4">4</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="5">5</a></li>#}
+{#            </ul>#}
+
         </div>
 
         <!-- SLIDE 3 -->
@@ -156,16 +158,15 @@
                     </li>
                 {% endfor %}
             </ul>
-            <!-- Pagination
-            <ul class="help--slides-pagination">
-            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>
-            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>
-            </ul>
-            -->
+{#            <!-- Pagination-->#}
+{#            <ul class="help--slides-pagination">#}
+{#            <li><a href="#" class="btn btn--small btn--without-border active" data-page="1">1</a></li>#}
+{#            <li><a href="#" class="btn btn--small btn--without-border" data-page="2">2</a></li>#}
+{#            </ul>#}
+
 
         </div>
     </section>
 {% endblock %}
-<script src="{% static "js/app.js" %}"></script>
 </body>
 </html>

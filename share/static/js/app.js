@@ -143,7 +143,7 @@ document.addEventListener("DOMContentLoaded", function() {
   /**
    * Hide elements when clicked on document
    */
-  document.addEventListener("onclick", function(e) {
+  document.addEventListener("click", function(e) {
     const target = e.target;
     const tagName = target.tagName;
 
@@ -197,7 +197,19 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", e => {
           e.preventDefault();
           this.currentStep++;
-          this.updateForm();
+          if(this.currentStep===2) {
+            if (get_checked_chexboxes().length > 0){
+               this.updateForm();
+                show_id()}
+            else {
+              this.currentStep--;
+            }
+            }
+
+          if(this.currentStep===3) {this.updateForm()}
+          if(this.currentStep===4) {this.updateForm()}
+          if(this.currentStep===5) {donation_summary(); this.updateForm()}
+          if(this.currentStep===6) {}
         });
       });
 
@@ -207,6 +219,13 @@ document.addEventListener("DOMContentLoaded", function() {
           e.preventDefault();
           this.currentStep--;
           this.updateForm();
+          if (this.currentStep === 1){
+            console.log("test")
+            console.log(document.querySelector('div#institutions'))
+            document.querySelector('div#institutions').querySelectorAll("div").forEach(div => {div.remove()})
+
+          }
+
         });
       });
 
@@ -235,9 +254,6 @@ document.addEventListener("DOMContentLoaded", function() {
       this.$step.parentElement.hidden = this.currentStep >= 6;
 
       // TODO: get data from inputs and show them in summary
-
-
-
     }
 
     /**
@@ -255,4 +271,137 @@ document.addEventListener("DOMContentLoaded", function() {
   if (form !== null) {
     new FormSteps(form);
   }
+
 });
+
+  /**
+   * Create URL with checked categories ids
+   */
+
+  function show_id(event)
+  {
+    const h = document.querySelector('#institutions')
+    var ids = get_checked_chexboxes();
+    var params = new URLSearchParams();
+    ids.forEach(id => params.append("id", id))
+    var address = '/get_institution_by_category?'+ params.toString();
+    fetch(address)
+        .then(response => response.json())
+        .then(institutions => institutions.forEach(institution => create_form_step_3(institution)));
+
+  }
+  function get_checked_chexboxes()
+  {
+      var picked_Checkbox = document.querySelectorAll('input[name="categories"]:checked');
+      var ids = [];
+      picked_Checkbox.forEach(box => ids.push(box.value));
+      console.log(ids);
+      return ids;
+  }
+
+  /**
+   * Create Form step 3
+   */
+
+function create_form_step_3(institution)
+  {
+  const type_names = {
+      1: 'Fundacja',
+      2: 'Organizacja Pozarządowa',
+      3: 'Lokalna Zbiórka'
+  }
+
+  let div = document.querySelector('#institutions');
+  let button = div.querySelector('div.form-group--buttons');
+
+  const maindiv = document.createElement("div")
+  maindiv.setAttribute("class", "form-group form-group--checkbox");
+  maindiv.setAttribute('id', 'single-institution');
+  div.insertBefore(maindiv, button)
+
+  const label = document.createElement("label")
+  maindiv.appendChild(label)
+
+  const input = document.createElement("input")
+  input.setAttribute("id", "institution_radio_checkbox")
+  input.setAttribute("type", "radio")
+  input.setAttribute("name", "institution")
+  input.setAttribute("value", institution.pk)
+  input.setAttribute("inst_name", institution.fields.name)
+  label.appendChild(input)
+
+  const span1 = document.createElement("span")
+  span1.setAttribute("class", "checkbox radio")
+  label.appendChild(span1)
+
+  const span2 = document.createElement("span")
+  span2.setAttribute("class", "description")
+  label.appendChild(span2)
+
+  const div1 = document.createElement("div")
+  div1.setAttribute("class", "title")
+  div1.innerHTML = `${type_names[institution.fields.type]} "${institution.fields.name}"`
+  span2.appendChild(div1)
+
+  const div2 = document.createElement("div")
+  div2.setAttribute("class", "subtitle")
+  div2.innerHTML = `Cel i misja: ${institution.fields.description}`
+  span2.appendChild(div2)
+}
+
+  /**
+   * Create Form step 5
+   */
+
+  function donation_summary()
+  {
+    // const picked_quantity = document.querySelector("[name='quantity']").value
+    // const span1 = document.createElement("span")
+    // span1.setAttribute("class","summary--text")
+    // span1.innerText = `Ilość przekazywanych worków ${picked_quantity}`
+    // document.querySelector('#picked-quantity').append(span1)
+
+    // const picked_institution = document.querySelector("input[name='institution']:checked").getAttribute("inst_name")
+    // const span2 = document.createElement("span")
+    // span2.setAttribute("class","summary--text")
+    // span2.innerText = `Dla ${picked_institution}`
+    // document.querySelector('#picked_institution').append(picked_institution)
+
+    const address = document.querySelector("[name='address']").value
+    const li1 = document.createElement("li")
+    li1.innerHTML= address
+    document.querySelector("ul#address-list").appendChild(li1)
+
+    const city = document.querySelector("[name='city']").value
+    const li2 = document.createElement("li")
+    li2.innerHTML= city
+    document.querySelector("ul#address-list").appendChild(li2)
+
+    const zip_code = document.querySelector("[name='zip_code']").value
+    const li3 = document.createElement("li")
+    li3.innerHTML= zip_code
+    document.querySelector("ul#address-list").appendChild(li3)
+
+    const phone_number = document.querySelector("[name='phone_number']").value
+    const li4 = document.createElement("li")
+    li4.innerHTML= phone_number
+    document.querySelector("ul#address-list").appendChild(li4)
+
+    const pick_up_date = document.querySelector("[name='pick_up_date']")
+    console.log(pick_up_date)
+    const li5 = document.createElement("li")
+    li5.innerHTML = pick_up_date.value
+    document.querySelector("ul#pick-up-list").appendChild(li5)
+
+    const pick_up_time = document.querySelector("[name='pick_up_time']")
+    console.log(pick_up_time)
+    const li6 = document.createElement("li")
+    li6.innerHTML = pick_up_time.value
+    document.querySelector("ul#pick-up-list").appendChild(li6)
+
+    const pick_up_comment = document.querySelector("[name='pick_up_comment']")
+    console.log(pick_up_comment)
+    const li7 = document.createElement("li")
+    li7.innerHTML = pick_up_comment.value
+    document.querySelector("ul#pick-up-list").appendChild(li7)
+  }

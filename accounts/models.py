@@ -33,9 +33,9 @@ class UserManager(BaseUserManager):
         if not last_name:
             raise ValueError('Nie podałeś nazwiska')
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError('Nie podałeś adresu email')
         if not password:
-            raise ValueError('User must have a password')
+            raise ValueError('Nie podałeś hasła')
 
         user = self.create_user(email, first_name, last_name, password=password)
         user.staff = True
@@ -51,9 +51,9 @@ class UserManager(BaseUserManager):
         if not last_name:
             raise ValueError('Nie podałeś nazwiska')
         if not email:
-            raise ValueError('User must have an email address')
+            raise ValueError('Nie podałeś adresu email')
         if not password:
-            raise ValueError('User must have a password')
+            raise ValueError('Nie podałeś hasła')
 
         user = self.create_user(email, first_name, last_name, password=password)
         user.staff = True
@@ -76,6 +76,10 @@ class User(AbstractBaseUser):
     REQUIRED_FIELDS = ["first_name", "last_name"]  # Email &amp; Password are required by default.
 
     objects = UserManager()
+
+    class Meta:
+        verbose_name = 'Użytkownik'
+        verbose_name_plural = 'Użytkownicy'
 
     def get_full_name(self):
         # The user is identified by their email address

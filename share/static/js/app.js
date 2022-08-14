@@ -197,13 +197,10 @@ document.addEventListener("DOMContentLoaded", function() {
         btn.addEventListener("click", e => {
           e.preventDefault();
           this.currentStep++;
-          if(this.currentStep===2) {
-            if (get_checked_chexboxes().length > 0){
-               this.updateForm();
-                show_id()}
-            else {
-              this.currentStep--;
-            }
+          if(this.currentStep===2)
+            {
+            if (picked_checkboxes().length > 0){this.updateForm(); show_id()}
+            else {this.currentStep--;}
             }
 
           if(this.currentStep===3) {this.updateForm()}
@@ -219,7 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
           e.preventDefault();
           this.currentStep--;
           this.updateForm();
-          if (this.currentStep === 1){
+          if (this.currentStep == 1){
             console.log("test")
             console.log(document.querySelector('div#institutions'))
             document.querySelector('div#institutions').querySelectorAll("div").forEach(div => {div.remove()})
@@ -276,12 +273,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
   /**
    * Create URL with checked categories ids
+   * Return list of institutions depend on categories ids
    */
 
   function show_id(event)
   {
     const h = document.querySelector('#institutions')
-    var ids = get_checked_chexboxes();
+    var ids = picked_checkboxes();
     var params = new URLSearchParams();
     ids.forEach(id => params.append("id", id))
     var address = '/get_institution_by_category?'+ params.toString();
@@ -290,11 +288,15 @@ document.addEventListener("DOMContentLoaded", function() {
         .then(institutions => institutions.forEach(institution => create_form_step_3(institution)));
 
   }
-  function get_checked_chexboxes()
+   /**
+   * Return list of checked categories ids
+   */
+
+  function picked_checkboxes()
   {
-      var picked_Checkbox = document.querySelectorAll('input[name="categories"]:checked');
+      var picked_checkbox = document.querySelectorAll('input[type="checkbox"]:checked');
       var ids = [];
-      picked_Checkbox.forEach(box => ids.push(box.value));
+      picked_checkbox.forEach(box => ids.push(box.value));
       console.log(ids);
       return ids;
   }
@@ -327,7 +329,7 @@ function create_form_step_3(institution)
   input.setAttribute("type", "radio")
   input.setAttribute("name", "institution")
   input.setAttribute("value", institution.pk)
-  input.setAttribute("inst_name", institution.fields.name)
+  input.setAttribute("institution_name", institution.fields.name)
   label.appendChild(input)
 
   const span1 = document.createElement("span")
@@ -355,18 +357,6 @@ function create_form_step_3(institution)
 
   function donation_summary()
   {
-    // const picked_quantity = document.querySelector("[name='quantity']").value
-    // const span1 = document.createElement("span")
-    // span1.setAttribute("class","summary--text")
-    // span1.innerText = `Ilość przekazywanych worków ${picked_quantity}`
-    // document.querySelector('#picked-quantity').append(span1)
-
-    // const picked_institution = document.querySelector("input[name='institution']:checked").getAttribute("inst_name")
-    // const span2 = document.createElement("span")
-    // span2.setAttribute("class","summary--text")
-    // span2.innerText = `Dla ${picked_institution}`
-    // document.querySelector('#picked_institution').append(picked_institution)
-
     const address = document.querySelector("[name='address']").value
     const li1 = document.createElement("li")
     li1.innerHTML= address
@@ -404,4 +394,12 @@ function create_form_step_3(institution)
     const li7 = document.createElement("li")
     li7.innerHTML = pick_up_comment.value
     document.querySelector("ul#pick-up-list").appendChild(li7)
+
+    const picked_quantity = document.getElementById("bags").value
+    const span1 =  document.getElementById('picked_quantity')
+    span1.textContent = `Ilość przekazywanych worków ${picked_quantity}`
+
+    const picked_institution = document.getElementById("institution_radio_checkbox").getAttribute("institution_name")
+    const span2 = document.getElementById('picked_institution')
+    span2.textContent = `Dla ${picked_institution}`
   }

@@ -35,7 +35,6 @@ class LandingPage(View):
 
 class AddDonation(LoginRequiredMixin, View):
     def get(self, request):
-
         categories = Category.objects.all()
         return render(request, "form.html", {"categories": categories})
 
@@ -48,7 +47,9 @@ class AddDonation(LoginRequiredMixin, View):
             donation.categories.set(form.cleaned_data.get('categories'))
             donation.save()
             return render(request, 'form-confirmation.html')
+
         return render(request, 'form-fail.html')
+
 def get_institution_by_category(request):
     categories_ids = request.GET.getlist('id')
     institutions = Institution.objects.all()

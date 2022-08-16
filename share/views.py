@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.serializers import serialize
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from accounts.models import User
 from share.forms import DonationForm
@@ -77,3 +77,21 @@ class UserProfil(View):
             "community_collection": community_collection,
         }
         return render(request, "user-profil.html", context)
+
+    def post(self, request):
+        donation_id = request.POST.get('id')
+        donation = Donation.objects.get(id=donation_id)
+        donation.is_taken = True
+        donation.save()
+        return redirect('profil')
+
+
+def donation_taken(request):
+        donation_id = request.GET.get('id')
+        print(donation_id)
+        donation = Donation.objects.filter(id=donation_id)
+        donation.is_taken = True
+        donation.update()
+
+        data = serialize('json', donation)
+        return HttpResponse(data, content_type="application/json")

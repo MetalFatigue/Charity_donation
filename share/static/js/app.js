@@ -269,7 +269,34 @@ document.addEventListener("DOMContentLoaded", function() {
     new FormSteps(form);
   }
 
+  /**
+   * Donation status update
+   */
+
+  document.querySelectorAll('button#donation_status').forEach(button => {
+    button.addEventListener('click', function()
+  {
+    const id = button.value
+    console.log(id)
+    var p = new URLSearchParams();
+    p.append("id", id)
+    var address = '/donation_taken?'+ p.toString();
+    console.log(address)
+    fetch(address)
+        .then(response => response.json())
+        .then(data => taken(data))
+
+  })})
+
 });
+
+  function taken(data) {
+    console.log(data)
+    var id = data[0]['pk']
+    console.log(id)
+    document.getElementById(`${id}`).textContent = 'Odebrano'
+  }
+
 
   /**
    * Create URL with checked categories ids
@@ -403,3 +430,6 @@ function create_form_step_3(institution)
     const span2 = document.getElementById('picked_institution')
     span2.textContent = `Dla ${picked_institution}`
   }
+
+
+

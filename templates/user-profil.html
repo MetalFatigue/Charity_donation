@@ -21,15 +21,37 @@
                 <th>Kategorie</th>
                 <th>Ilość przekazanych worków</th>
                 <th>data odbioru /<br> data przekazania</th>
+                <th>Status</th>
+                <th>Potwierdź odbiór</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="picked_donations">
             {% for donation in donations %}
                 <tr>
                     <td>{{ donation.institution }}</td>
                     <td>{% for category in donation.categories.all %}{{ category }}<br>{% endfor %}</td>
                     <td>{{ donation.quantity}}</td>
                     <td>{{ donation.pick_up_date }}</td>
+                    {% if donation.is_taken == True %}
+                        <td>Odebrano</td>
+                    {% else %}
+                        <td id={{ donation.id }}>Oczekuje na Odbiór</td>
+                    {% endif %}
+                    {% if donation.is_taken == True %}
+                        <td></td>
+                    {% else %}
+                        <td >
+                            <form name="picked_donations" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ donation.id }}" name="id">
+                                <button type="submit">  Potwierdź odbiór  </button>
+                            </form>
+                        </td>
+
+                    {% endif %}
+                        <td>
+                             <button id="donation_status" value="{{ donation.id }}">  Potwierdź odbiór  </button>
+                        </td>
                 </tr>
             {% endfor %}
             </tbody>
